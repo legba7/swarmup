@@ -10,8 +10,7 @@ ENODE1="enode://2eaefb785c27474f9422eb7360dd20d18054d0f2266a2f51a4c953d9209e3657
 cd $GOETHEREUMPATH
 
 echo "extip:"
-# EXTIP=$(lwp-request -o text checkip.dyndns.org | awk '{ print $NF }')
-EXTIP=80.109.34.145
+EXTIP=$(lwp-request -o text checkip.dyndns.org | awk '{ print $NF }')
 echo "$EXTIP"
 
 GETHCMD="$GOETHEREUMPATH/geth --datadir $DATADIR --unlock 0 --password $BZZKEYPASS --verbosity 6 --networkid 8158 --nat extip:$EXTIP --nodiscover"
