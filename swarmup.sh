@@ -6,8 +6,14 @@ export GOPATH="$HOME/go"
 GOETHEREUMPATH="$GOPATH/src/github.com/ethereum/go-ethereum/"
 export DATADIR="$HOME/tmp/BZZ/oib2"
 BZZKEYPASS="$DATADIR/bzzkeypass.txt"
-ENODE1="enode://2eaefb785c27474f9422eb7360dd20d18054d0f2266a2f51a4c953d9209e3657e4f371ee7d9ce3630c22bd8c0a7e6b9d7f528f18c9c53cc5ec7d95c6c3a83b1a@192.168.0.15:30399"
+ENODE1="enode://555996a645c2f08712413c71d5e0bd122c148a1000c5306f71859b1cdd41d4dd6ac6faceb4975d467c1e07923999d7e1d20d9113d1ebbac16f43d1e14a33cd8f@[::]:30304?discport=0"
 cd $GOETHEREUMPATH
+ENODE2="enode://0e2d6bb7942742fa826a78a02d68f6a403f129b318aa030b958086d9bf8457666e0fb08d9a14e95f2fb8
+40fd8e84cc1a2cec878bf03b3bb16b05a39a9eab3018@84.113.201.155:30303?discport=0"
+BZZENODE1="enode://2eaefb785c27474f9422eb7360dd20d18054d0f2266a2f51a4c953d9209e3657e4f371ee7d9ce3630c22bd8c0a7e6b9d7f528f18c9c53cc5ec7d95c6c3a83b1a@192.168.0.15:30399"
+#end custom variables
+#
+#----------------------------------------------------------------------
 
 echo "extip:"
 EXTIP=$(lwp-request -o text checkip.dyndns.org | awk '{ print $NF }')
@@ -24,8 +30,13 @@ for ((i=10;i>0;i--)); do
 done
 echo ""
 
-# GETHADDPEER="./geth --exec 'admin.addPeer($ENODE1)' attach ipc:$DATADIR/geth.ipc"
-# echo $GETHADDPEER
+GETHADDPEER1="./geth --exec 'admin.addPeer($ENODE1)' attach ipc:$DATADIR/geth.ipc"
+echo $GETHADDPEER1
+$GETHADDPEER1
+
+GETHADDPEER2="./geth --exec 'admin.addPeer($ENODE2)' attach ipc:$DATADIR/geth.ipc"
+echo $GETHADDPEER2
+$GETHADDPEER2
 # ./geth --exec "admin.addPeer($ENODE1)" attach ipc:$DATADIR/geth.ipc
 
 # # wait
@@ -43,3 +54,7 @@ BZZDCMD="$GOETHEREUMPATH/bzzd --bzzaccount $BZZKEY --datadir $DATADIR --ethapi $
 echo $BZZDCMD
 
 $BZZDCMD 2>> $DATADIR/bzz.log < <(echo -n `<$BZZKEYPASS`) &
+
+BZZADDPEER1="./geth --exec 'admin.addPeer($BZZENODE1)' attach ipc:$DATADIR/geth.ipc"
+echo $BZZADDPEER1
+$BZZADDPEER1
