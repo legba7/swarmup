@@ -1,7 +1,11 @@
 #!/bin/bash
 
-# execute script with leading .
-# set custom varibales 
+# 1. customize varibales
+# 2. create file "$DATADIR/bzzkeypass.txt" containing your bzzkey password
+# 3. execute script with leading .
+#
+# start custom variables
+#----------------------------------------------------------------------
 export GOPATH="$HOME/go"
 GOETHEREUMPATH="$GOPATH/src/github.com/ethereum/go-ethereum/"
 export DATADIR="$HOME/tmp/BZZ/oib2"
@@ -10,9 +14,9 @@ ENODE1="enode://555996a645c2f08712413c71d5e0bd122c148a1000c5306f71859b1cdd41d4dd
 cd $GOETHEREUMPATH
 ENODE2="enode://0e2d6bb7942742fa826a78a02d68f6a403f129b318aa030b958086d9bf8457666e0fb08d9a14e95f2fb840fd8e84cc1a2cec878bf03b3bb16b05a39a9eab3018@84.113.201.155:30303?discport=0"
 BZZENODE1="enode://2eaefb785c27474f9422eb7360dd20d18054d0f2266a2f51a4c953d9209e3657e4f371ee7d9ce3630c22bd8c0a7e6b9d7f528f18c9c53cc5ec7d95c6c3a83b1a@192.168.0.15:30399"
+#----------------------------------------------------------------------
 #end custom variables
 #
-#----------------------------------------------------------------------
 
 echo "extip:"
 EXTIP=$(lwp-request -o text checkip.dyndns.org | awk '{ print $NF }')
