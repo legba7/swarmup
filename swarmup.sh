@@ -149,7 +149,7 @@ helpinfo(){
     echo "| 1. customize variables in script first |"
     echo "| 2. use option setup                    |"
     echo "| 3. use option bzzsetup                 |"
-    echo "|---------------options------------------|"
+    echo "|--------------commands------------------|"
     echo "| setup               sets a new node up |"
     echo "| bzzsetup        sets a new bzz node up |"
     echo "| start                      starts node |"
