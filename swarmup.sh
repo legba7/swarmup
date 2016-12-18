@@ -4,8 +4,8 @@
 # 2. create file "$DATADIR/../bzzkeypass.txt" containing your bzzkey password
 # 3. create file "$DATADIR/../genesis.json" custom genesis block
 # 4. execute script with leading . and option setup
-# 5. optionaly write BZZKEY in custom genesis block to start with some ether
-# 6. execute script with leading . and no option runs the node
+# 5. execute script with leading . and option bzzsetup
+# 5.1 optionaly write BZZKEY in custom genesis block to start with some ether
 #
 # start custom variables
 #----------------------------------------------------------------------
@@ -35,7 +35,6 @@ getbzzkey(){
     echo "--------bzzkey---------------------------"
     echo $BZZKEYCMD
     eval BZZKEY=\`${BZZKEYCMD}\`
-    export $BZZKEY
     echo "BZZKEY: " $BZZKEY
 }
 
@@ -54,7 +53,7 @@ start_node(){
 
     getextip
 
-    GETHCMD="$GOETHEREUMPATH/geth --datadir $DATADIR --unlock 0 --password $BZZKEYPASS --verbosity 3 --networkid $NETWORKID --nat extip:$EXTIP --bootnodes $ENODE1,$ENODE2"
+    GETHCMD="$GOETHEREUMPATH/geth --datadir $DATADIR --unlock 0 --password $BZZKEYPASS --verbosity 3 --networkid $NETWORKID --nat extip:$EXTIP --bootnodes $ENODE1,$ENODE2 $@"
     echo "--------geth-----------------------------"
     echo $GETHCMD
     nohup $GETHCMD  >>$DATADIR/geth.log 2>>$DATADIR/geth.log </dev/null &
@@ -153,6 +152,7 @@ helpinfo(){
     echo "| setup               sets a new node up |"
     echo "| bzzsetup        sets a new bzz node up |"
     echo "| start                      starts node |"
+    echo "| start cmd        starts node with cmds |"
     echo "| bzz                         starts bzz |"
     echo "| stop                         stop node |"
     echo "| bzzstop                       stop bzz |"
@@ -174,7 +174,16 @@ else
 	    ;;
 	start)
 	    echo "starting node"
-	    start_node
+	    #start_node ${args[1]}
+	    if [ $# -gt 1 ]; then
+		GETHCMDS=""
+		for ((i=1;i<$#;i++)); do
+		    GETHCMDS="$GETHCMDS ${args[i]}"
+		done
+		start_node $GETHCMDS
+	    else
+		start_node
+	    fi
 	    ;;
 	bzz)
 	    echo "bzz"
