@@ -24,8 +24,7 @@ BZZENODE1="enode://2eaefb785c27474f9422eb7360dd20d18054d0f2266a2f51a4c953d9209e3
 #
 
 getextip(){
-    #EXTIP=$(lwp-request -o text checkip.dyndns.org | awk '{ print $NF }')
-    EXTIP=80.109.34.145
+    EXTIP=$(lwp-request -o text checkip.dyndns.org | awk '{ print $NF }')
     echo "--------extip----------------------------"
     echo "EXTIP: $EXTIP"
     }
@@ -61,6 +60,16 @@ start_node(){
     wait 10
 
     getbzzkey
+
+    ADDPEER1="$GOETHEREUMPATH/geth --exec 'admin.addPeer(\"$ENODE1\")' attach ipc:$DATADIR/geth.ipc"
+    echo "--------bzz addPeer-----------------------"
+    echo $ADDPEER1
+    $ADDPEER1
+
+    ADDPEER2="$GOETHEREUMPATH/geth --exec 'admin.addPeer(\"$ENODE2\")' attach ipc:$DATADIR/geth.ipc"
+    echo "--------bzz addPeer-----------------------"
+    echo $ADDPEER2
+    $ADDPEER2
 }
 
 stopit(){
