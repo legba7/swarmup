@@ -11,10 +11,10 @@
 #----------------------------------------------------------------------
 export GOPATH="$HOME/go"
 GOETHEREUMPATH="$GOPATH/src/github.com/ethereum/go-ethereum/"
-export DATADIR="$HOME/tmp/BZZ/testnetsetup"
+export DATADIR="$HOME/tmp/BZZ/testnet"
 BZZKEYPASS="$DATADIR/../bzzkeypass.txt"
 GENESIS="$DATADIR/../genesis.json"
-NETWORKID=81589
+NETWORKID=8158
 ENODE1="enode://555996a645c2f08712413c71d5e0bd122c148a1000c5306f71859b1cdd41d4dd6ac6faceb4975d467c1e07923999d7e1d20d9113d1ebbac16f43d1e14a33cd8f@80.109.34.145:30304"
 cd $GOETHEREUMPATH
 ENODE2="enode://0e2d6bb7942742fa826a78a02d68f6a403f129b318aa030b958086d9bf8457666e0fb08d9a14e95f2fb840fd8e84cc1a2cec878bf03b3bb16b05a39a9eab3018@84.113.201.155:30303"
@@ -98,6 +98,8 @@ start_bzzd(){
     echo $BZZDCMD
     $BZZDCMD 2>> $DATADIR/bzz.log < <(echo -n `<$BZZKEYPASS`) &
 
+    wait 30
+    
     BZZADDPEER1="$GOETHEREUMPATH/geth --exec 'admin.addPeer(\"$BZZENODE1\")' attach ipc:$DATADIR/bzzd.ipc"
     echo "--------bzz addPeer-----------------------"
     echo $BZZADDPEER1
