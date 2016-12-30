@@ -4,7 +4,7 @@
 # 2. create file "$DATADIR/../bzzkeypass.txt" containing your bzzkey password
 # 3. create file "$DATADIR/../genesis.json" custom genesis block
 # 4. execute script with leading . and option setup
-# 5. execute script with leading . and option bzzsetup
+# 5. execute script with leading . and option swarmsetup
 # 5.1 optionaly write BZZKEY in custom genesis block to start with some ether
 #
 # start custom variables
@@ -30,7 +30,7 @@ getextip(){
     }
 
 getbzzkey(){
-    BZZKEYCMD="$GOETHEREUMPATH/geth --exec 'eth.accounts[0]' attach ipc:$DATADIR/geth.ipc | cut -b4- | sed 's/.$//'"
+    BZZKEYCMD="$HOME/go/bin/geth --exec 'eth.accounts[0]' attach ipc:$DATADIR/geth.ipc | cut -b4- | sed 's/.$//'"
     echo "--------bzzkey---------------------------"
     echo $BZZKEYCMD
     eval BZZKEY=\`${BZZKEYCMD}\`
@@ -52,7 +52,7 @@ start_node(){
 
     getextip
 
-    GETHCMD="$GOETHEREUMPATH/geth --datadir $DATADIR --unlock 0 --password $BZZKEYPASS --verbosity 3 --networkid $NETWORKID --nat extip:$EXTIP --bootnodes $ENODE1,$ENODE2 $@"
+    GETHCMD="$HOME/go/bin/geth --datadir $DATADIR --unlock 0 --password $BZZKEYPASS --verbosity 3 --networkid $NETWORKID --nat extip:$EXTIP --bootnodes $ENODE1,$ENODE2 $@"
     echo "--------geth-----------------------------"
     echo $GETHCMD
     nohup $GETHCMD  >>$DATADIR/geth.log 2>>$DATADIR/geth.log </dev/null &
@@ -61,13 +61,13 @@ start_node(){
 
     getbzzkey
 
-    ADDPEER1="$GOETHEREUMPATH/geth --exec 'admin.addPeer(\"$ENODE1\")' attach ipc:$DATADIR/geth.ipc"
-    echo "--------bzz addPeer-----------------------"
+    ADDPEER1="$HOME/go/bin/geth --exec 'admin.addPeer(\"$ENODE1\")' attach ipc:$DATADIR/geth.ipc"
+    echo "--------geth addPeer-----------------------"
     echo $ADDPEER1
     $ADDPEER1
 
-    ADDPEER2="$GOETHEREUMPATH/geth --exec 'admin.addPeer(\"$ENODE2\")' attach ipc:$DATADIR/geth.ipc"
-    echo "--------bzz addPeer-----------------------"
+    ADDPEER2="$HOME/go/bin/geth --exec 'admin.addPeer(\"$ENODE2\")' attach ipc:$DATADIR/geth.ipc"
+    echo "--------geth addPeer-----------------------"
     echo $ADDPEER2
     $ADDPEER2
 }
@@ -83,7 +83,7 @@ setup_bzzd(){
 
     stopit geth
 
-    GETHCMD="$GOETHEREUMPATH/geth --datadir $DATADIR --networkid $NETWORKID --unlock 0 --password $BZZKEYPASS --maxpeers 0 --nodiscover --mine --verbosity 4"
+    GETHCMD="$HOME/go/bin/geth --datadir $DATADIR --networkid $NETWORKID --unlock 0 --password $BZZKEYPASS --maxpeers 0 --nodiscover --mine --verbosity 4"
     echo "--------geth mine--------------------------"
     echo $GETHCMD
     nohup $GETHCMD  >>$DATADIR/geth.log 2>>$DATADIR/geth.log </dev/null &
@@ -92,8 +92,8 @@ setup_bzzd(){
 
     getbzzkey
 
-    BZZDCMD="$GOETHEREUMPATH/bzzd --bzzaccount $BZZKEY --datadir $DATADIR --maxpeers 0 --ethapi $DATADIR/geth.ipc"
-    echo "--------bzz-------------------------------"
+    BZZDCMD="$HOME/go/bin/swarm --bzzaccount $BZZKEY --datadir $DATADIR --maxpeers 0 --ethapi $DATADIR/geth.ipc"
+    echo "--------swarm-------------------------------"
     echo $BZZDCMD
     $BZZDCMD 2>> $DATADIR/bzz.log < <(echo -n `<$BZZKEYPASS`) &
 
@@ -103,14 +103,14 @@ start_bzzd(){
 
     getbzzkey
 
-    BZZDCMD="$GOETHEREUMPATH/bzzd --bzzaccount $BZZKEY --datadir $DATADIR --ethapi $DATADIR/geth.ipc"
+    BZZDCMD="$HOME/go/bin/swarm --bzzaccount $BZZKEY --datadir $DATADIR --ethapi $DATADIR/geth.ipc"
     echo $BZZDCMD
     $BZZDCMD 2>> $DATADIR/bzz.log < <(echo -n `<$BZZKEYPASS`) &
 
     wait 30
     
-    BZZADDPEER1="$GOETHEREUMPATH/geth --exec 'admin.addPeer(\"$BZZENODE1\")' attach ipc:$DATADIR/bzzd.ipc"
-    echo "--------bzz addPeer-----------------------"
+    BZZADDPEER1="$HOME/go/bin/geth --exec 'admin.addPeer(\"$BZZENODE1\")' attach ipc:$DATADIR/bzzd.ipc"
+    echo "--------swarm addPeer-----------------------"
     echo $BZZADDPEER1
     $BZZADDPEER1
 }
@@ -158,15 +158,15 @@ helpinfo(){
     echo "|---------------swarmup------------------|"
     echo "| 1. customize variables in script first |"
     echo "| 2. use option setup                    |"
-    echo "| 3. use option bzzsetup                 |"
+    echo "| 3. use option swarmsetup               |"
     echo "|--------------commands------------------|"
     echo "| setup               sets a new node up |"
-    echo "| bzzsetup        sets a new bzz node up |"
+    echo "| swarmsetup    sets a new swarm node up |"
     echo "| start                      starts node |"
     echo "| start cmd        starts node with cmds |"
-    echo "| bzz                         starts bzz |"
+    echo "| swarm                     starts swarm |"
     echo "| stop                         stop node |"
-    echo "| bzzstop                       stop bzz |"
+    echo "| swarmstop                   stop swarm |"
     echo "|----------------------------------------|"
 }
 
@@ -179,7 +179,7 @@ else
 	    echo "setup"
 	    setup
 	    ;;
-	bzzsetup)
+	swarmsetup)
 	    echo "bzzsetup"
 	    setup_bzzd
 	    ;;
@@ -196,7 +196,7 @@ else
 		start_node
 	    fi
 	    ;;
-	bzz)
+	swarm)
 	    echo "bzz"
 	    start_bzzd
 	    ;;
@@ -204,9 +204,9 @@ else
 	    echo "stop geth"
 	    stopit geth
 	    ;;
-	bzzstop)
+	swarmstop)
 	    echo "stop bzz"
-	    stopit bzzd
+	    stopit swarm
 	    ;;
 	*)
 	    helpinfo
